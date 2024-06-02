@@ -644,7 +644,8 @@ crate.annotation(<a href="#crate.annotation-version">version</a>, <a href="#crat
                  <a href="#crate.annotation-build_script_rustc_env">build_script_rustc_env</a>, <a href="#crate.annotation-build_script_toolchains">build_script_toolchains</a>, <a href="#crate.annotation-compile_data">compile_data</a>, <a href="#crate.annotation-compile_data_glob">compile_data_glob</a>,
                  <a href="#crate.annotation-crate_features">crate_features</a>, <a href="#crate.annotation-data">data</a>, <a href="#crate.annotation-data_glob">data_glob</a>, <a href="#crate.annotation-deps">deps</a>, <a href="#crate.annotation-extra_aliased_targets">extra_aliased_targets</a>, <a href="#crate.annotation-gen_binaries">gen_binaries</a>,
                  <a href="#crate.annotation-disable_pipelining">disable_pipelining</a>, <a href="#crate.annotation-gen_build_script">gen_build_script</a>, <a href="#crate.annotation-patch_args">patch_args</a>, <a href="#crate.annotation-patch_tool">patch_tool</a>, <a href="#crate.annotation-patches">patches</a>,
-                 <a href="#crate.annotation-proc_macro_deps">proc_macro_deps</a>, <a href="#crate.annotation-rustc_env">rustc_env</a>, <a href="#crate.annotation-rustc_env_files">rustc_env_files</a>, <a href="#crate.annotation-rustc_flags">rustc_flags</a>, <a href="#crate.annotation-shallow_since">shallow_since</a>)
+                 <a href="#crate.annotation-proc_macro_deps">proc_macro_deps</a>, <a href="#crate.annotation-rustc_env">rustc_env</a>, <a href="#crate.annotation-rustc_env_files">rustc_env_files</a>, <a href="#crate.annotation-rustc_flags">rustc_flags</a>, <a href="#crate.annotation-shallow_since">shallow_since</a>,
+                 <a href="#crate.annotation-override_targets">override_targets</a>)
 </pre>
 
 A collection of extra attributes and settings for a particular crate
@@ -685,6 +686,7 @@ A collection of extra attributes and settings for a particular crate
 | <a id="crate.annotation-rustc_env_files"></a>rustc_env_files |  A list of labels to set on a crate's <code>rust_library::rustc_env_files</code> attribute.   |  `None` |
 | <a id="crate.annotation-rustc_flags"></a>rustc_flags |  A list of strings to set on a crate's <code>rust_library::rustc_flags</code> attribute.   |  `None` |
 | <a id="crate.annotation-shallow_since"></a>shallow_since |  An optional timestamp used for crates originating from a git repository instead of a crate registry. This flag optimizes fetching the source code.   |  `None` |
+| <a id="crate.annotation-override_targets"></a>override_targets |  A dictionary of alternate tagets to use when something depends on this crate to allow the parent repo to provide its own version of this dependency. Keys can be <code>proc_marco</code>, <code>build_script</code>, <code>lib</code>, <code>bin</code>.   |  `None` |
 
 **RETURNS**
 
