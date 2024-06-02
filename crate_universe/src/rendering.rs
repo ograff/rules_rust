@@ -373,31 +373,69 @@ impl Renderer {
         for rule in &krate.targets {
             match rule {
                 Rule::BuildScript(target) => {
-                    load("@rules_rust//cargo:defs.bzl", "cargo_build_script");
-                    let cargo_build_script =
-                        self.make_cargo_build_script(platforms, krate, target)?;
-                    starlark.push(Starlark::CargoBuildScript(cargo_build_script));
-                    starlark.push(Starlark::Alias(Alias {
-                        rule: AliasRule::default().rule(),
-                        name: target.crate_name.clone(),
-                        actual: Label::from_str("_bs").unwrap(),
-                        tags: BTreeSet::from(["manual".to_owned()]),
-                    }));
+                    if let Some(alternate_build_script) = krate.override_targets.get("build_script")
+                    {
+                        starlark.push(Starlark::Alias(Alias {
+                            rule: AliasRule::default().rule(),
+                            name: target.crate_name.clone(),
+                            actual: alternate_build_script.clone(),
+                            tags: BTreeSet::from(["manual".to_owned()]),
+                        }));
+                    } else {
+                        load("@rules_rust//cargo:defs.bzl", "cargo_build_script");
+                        let cargo_build_script =
+                            self.make_cargo_build_script(platforms, krate, target)?;
+                        starlark.push(Starlark::CargoBuildScript(cargo_build_script));
+                        starlark.push(Starlark::Alias(Alias {
+                            rule: AliasRule::default().rule(),
+                            name: target.crate_name.clone(),
+                            actual: Label::from_str("_bs").unwrap(),
+                            tags: BTreeSet::from(["manual".to_owned()]),
+                        }));
+                    }
                 }
                 Rule::ProcMacro(target) => {
-                    load("@rules_rust//rust:defs.bzl", "rust_proc_macro");
-                    let rust_proc_macro = self.make_rust_proc_macro(platforms, krate, target)?;
-                    starlark.push(Starlark::RustProcMacro(rust_proc_macro));
+                    if let Some(alternate_proc_macro) = krate.override_targets.get("proc_macro") {
+                        starlark.push(Starlark::Alias(Alias {
+                            rule: AliasRule::default().rule(),
+                            name: target.crate_name.clone(),
+                            actual: alternate_proc_macro.clone(),
+                            tags: BTreeSet::from(["manual".to_owned()]),
+                        }));
+                    } else {
+                        load("@rules_rust//rust:defs.bzl", "rust_proc_macro");
+                        let rust_proc_macro =
+                            self.make_rust_proc_macro(platforms, krate, target)?;
+                        starlark.push(Starlark::RustProcMacro(rust_proc_macro));
+                    }
                 }
                 Rule::Library(target) => {
-                    load("@rules_rust//rust:defs.bzl", "rust_library");
-                    let rust_library = self.make_rust_library(platforms, krate, target)?;
-                    starlark.push(Starlark::RustLibrary(rust_library));
+                    if let Some(alternate_library) = krate.override_targets.get("lib") {
+                        starlark.push(Starlark::Alias(Alias {
+                            rule: AliasRule::default().rule(),
+                            name: target.crate_name.clone(),
+                            actual: alternate_library.clone(),
+                            tags: BTreeSet::from(["manual".to_owned()]),
+                        }));
+                    } else {
+                        load("@rules_rust//rust:defs.bzl", "rust_library");
+                        let rust_library = self.make_rust_library(platforms, krate, target)?;
+                        starlark.push(Starlark::RustLibrary(rust_library));
+                    }
                 }
                 Rule::Binary(target) => {
-                    load("@rules_rust//rust:defs.bzl", "rust_binary");
-                    let rust_binary = self.make_rust_binary(platforms, krate, target)?;
-                    starlark.push(Starlark::RustBinary(rust_binary));
+                    if let Some(alternate_binary) = krate.override_targets.get("bin") {
+                        starlark.push(Starlark::Alias(Alias {
+                            rule: AliasRule::default().rule(),
+                            name: target.crate_name.clone(),
+                            actual: alternate_binary.clone(),
+                            tags: BTreeSet::from(["manual".to_owned()]),
+                        }));
+                    } else {
+                        load("@rules_rust//rust:defs.bzl", "rust_binary");
+                        let rust_binary = self.make_rust_binary(platforms, krate, target)?;
+                        starlark.push(Starlark::RustBinary(rust_binary));
+                    }
                 }
             }
         }
@@ -967,6 +1005,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1004,6 +1043,7 @@ mod test {
                 disable_pipelining: true,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1044,6 +1084,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1084,6 +1125,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1121,6 +1163,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1160,6 +1203,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1214,6 +1258,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1247,6 +1292,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1286,6 +1332,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1337,6 +1384,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1447,6 +1495,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1493,6 +1542,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1545,6 +1595,7 @@ mod test {
                 repository: None,
                 license: None,
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1608,6 +1659,7 @@ mod test {
                 repository: None,
                 license: None,
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
@@ -1678,6 +1730,7 @@ mod test {
                 disable_pipelining: false,
                 extra_aliased_targets: BTreeMap::default(),
                 alias_rule: None,
+                override_targets: BTreeMap::default(),
             },
         );
 
