@@ -719,6 +719,39 @@ load(
 complicated_dependencies_crate_repositories()
 
 ###############################################################################
+# O V E R R I D E  T A R G E T
+###############################################################################
+
+crates_repository(
+    name = "override_target",
+    annotations = {
+        "foo": [crate.annotation(
+            override_targets = {"lib": "@//override_target:foo"},
+        )],
+    },
+    cargo_lockfile = "//override_target:Cargo.Bazel.lock",
+    # `generator` is not necessary in official releases.
+    # See load satement for `cargo_bazel_bootstrap`.
+    generator = "@cargo_bazel_bootstrap//:cargo-bazel",
+    lockfile = "//override_target:cargo-bazel-lock.json",
+    packages = {
+        "foo": crate.spec(
+            version = "0.0.0",
+        ),
+    },
+    splicing_config = splicing_config(
+        resolver_version = "2",
+    ),
+)
+
+load(
+    "@override_target//:defs.bzl",
+    override_target_crate_repositories = "crate_repositories",
+)
+
+override_target_crate_repositories()
+
+###############################################################################
 
 # Used for Bazel CI
 http_archive(
