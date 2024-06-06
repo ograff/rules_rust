@@ -61,6 +61,28 @@ pub(crate) enum Rule {
     BuildScript(TargetAttributes),
 }
 
+impl Rule {
+    /// The keys that can be used in override_targets to override these Rule sources.
+    /// These intentionally match the accepted `Target.kind`s returned by cargo-metadata.
+    pub(crate) fn override_target_key(&self) -> &'static str {
+        match self {
+            Self::Library(..) => "lib",
+            Self::ProcMacro(..) => "proc-macro",
+            Self::Binary(..) => "bin",
+            Self::BuildScript(..) => "custom-build",
+        }
+    }
+
+    pub(crate) fn crate_name(&self) -> &str {
+        match self {
+            Self::Library(attrs)
+            | Self::ProcMacro(attrs)
+            | Self::Binary(attrs)
+            | Self::BuildScript(attrs) => attrs.crate_name,
+        }
+    }
+}
+
 /// A set of attributes common to most `rust_library`, `rust_proc_macro`, and other
 /// [core rules of `rules_rust`](https://bazelbuild.github.io/rules_rust/defs.html).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
