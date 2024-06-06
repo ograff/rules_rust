@@ -327,6 +327,10 @@ def _cargo_build_script_impl(ctx):
     )
 
     return [
+        # Although this isn't used anywhere, without this, `bazel build`'ing
+        # the cargo_build_script label won't actually run the build script
+        # since bazel is lazy.
+        DefaultInfo(files = depset([out_dir])),
         BuildInfo(
             out_dir = out_dir,
             rustc_env = env_out,
