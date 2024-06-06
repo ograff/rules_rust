@@ -78,7 +78,7 @@ impl Rule {
             Self::Library(attrs)
             | Self::ProcMacro(attrs)
             | Self::Binary(attrs)
-            | Self::BuildScript(attrs) => attrs.crate_name,
+            | Self::BuildScript(attrs) => &attrs.crate_name,
         }
     }
 }

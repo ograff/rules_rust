@@ -374,7 +374,7 @@ impl Renderer {
             if let Some(override_target) = krate.override_targets.get(rule.override_target_key()) {
                 starlark.push(Starlark::Alias(Alias {
                     rule: AliasRule::default().rule(),
-                    name: target.crate_name().clone(),
+                    name: rule.crate_name().to_owned(),
                     actual: override_target.clone(),
                     tags: BTreeSet::from(["manual".to_owned()]),
                 }));
