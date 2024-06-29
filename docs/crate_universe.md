@@ -187,7 +187,7 @@ http_archive(
     sha256 = "c8d748b182c8f95224336d20dcc5609598af612581ce60cfb29da4dc8d0091f2",
     strip_prefix = "rustfilt-0.2.1",
     type = "tar.gz",
-    urls = ["https://crates.io/api/v1/crates/rustfilt/0.2.1/download"],
+    urls = ["https://static.crates.io/crates/rustfilt/rustfilt-0.2.1.crate"],
 )
 
 load("@rules_rust//crate_universe:defs.bzl", "crates_repository")
