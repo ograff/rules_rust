@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - version.bzl
+      - .github/workflows/release.yaml
   push:
     branches:
       - main
