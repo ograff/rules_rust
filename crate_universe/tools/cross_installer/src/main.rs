@@ -24,7 +24,7 @@ fn prepare_workspace(workspace_root: &Path) {
     // Unfortunately, cross runs into issues when cross compiling incrementally.
     // To avoid this, the workspace must be cleaned
     let r = Runfiles::create().unwrap();
-    let cargo = r.rlocation_from(env!("CARGO"), "rules_rust").unwrap();
+    let cargo = rlocation!(r, env!("CARGO")).unwrap();
 
     if !cargo.exists() {
         panic!("Cargo binary not found at {}", cargo.display());
