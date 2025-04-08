@@ -8,6 +8,7 @@ on:
       - main
     paths:
       - version.bzl
+      - .github/workflows/release.yaml
   push:
     branches:
       - main
@@ -27,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Ensure release does not already exist
+        if: startsWith(github.ref, 'refs/heads/main') == false
         run: |
           git fetch origin &> /dev/null
           version="$(grep 'VERSION =' ${{ github.workspace }}/version.bzl | sed 's/VERSION = "//' | sed 's/"//')"
