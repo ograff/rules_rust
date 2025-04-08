@@ -28,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Ensure release does not already exist
+        if: startsWith(github.ref, 'refs/heads/main') == false
         run: |
           git fetch origin &> /dev/null
           version="$(grep 'VERSION =' ${{ github.workspace }}/version.bzl | sed 's/VERSION = "//' | sed 's/"//')"
