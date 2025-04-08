@@ -17,9 +17,9 @@ env:
 
 jobs:
   validation:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       # TODO: Unfortunately it's not obvious how to restrict `workflow_dispatch` to a particular branch
       # so this step ensures releases are always done off of `main`.
       - name: Ensure branch is 'main'
@@ -53,7 +53,7 @@ jobs:
           - os: macOS-13
             env:
               TARGET: "aarch64-apple-darwin"
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             env:
               TARGET: "aarch64-unknown-linux-gnu"
           - os: windows-2022
@@ -62,20 +62,20 @@ jobs:
           - os: macOS-13
             env:
               TARGET: "x86_64-apple-darwin"
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             env:
               TARGET: "x86_64-pc-windows-gnu"
           - os: windows-2022
             env:
               TARGET: "x86_64-pc-windows-msvc"
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             env:
               TARGET: "x86_64-unknown-linux-gnu"
-          - os: ubuntu-20.04
+          - os: ubuntu-22.04
             env:
               TARGET: "x86_64-unknown-linux-musl"
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install rust toolchains for host
         run: |
           # Detect the current version of rust
@@ -118,9 +118,9 @@ jobs:
           if-no-files-found: error
   release:
     needs: builds
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           path: ${{ github.workspace }}/crate_universe/target/artifacts
